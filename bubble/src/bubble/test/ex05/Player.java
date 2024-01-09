@@ -107,7 +107,7 @@ public class Player extends JLabel implements Moveable {
 				y = y - JUMPSPEED; // 왼쪽상단 좌표가 0,0이기때문에 up은 -(minus)해줘야함
 				setLocation(x, y);
 				try {
-					Thread.sleep(10);
+					Thread.sleep(5);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -128,7 +128,7 @@ public class Player extends JLabel implements Moveable {
 				y = y + JUMPSPEED;
 				setLocation(x, y);
 				try {
-					Thread.sleep(10);
+					Thread.sleep(3);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
