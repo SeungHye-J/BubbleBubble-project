@@ -33,6 +33,7 @@ public class BubbleFrame extends JFrame {
 		add(player);
 		enemy = new Enemy(mContext);
 		add(enemy);
+		new BGM();
 		
 		//JPannel 안에 JLabel있는 버전
 //		backgroundMap.setSize(100,100);
