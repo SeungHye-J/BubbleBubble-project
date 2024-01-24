@@ -60,63 +60,38 @@ public class BackGroundEnemyService implements Runnable {
 				STATE = 0;
 			}
 			
-		/*	
-			{
-				if (!enemy.isUp() && !enemy.isDown()) {
-					
-					if (STATE == 2) {// 맨밑바닥에서 벽에 두번 충돌 하면 up
-						for(int i =0; i <JUMPCOUNT; i++) {
-							enemy.up();
-						}
-						STATE = 0;
-						FIRSTBOTTOM = 0;
+			//적군 꼭대기층으로 점프시키기
+			if(STATE ==2
+				&&JUMPCOUNT < 3
+				&& FIRSTBOTTOM == 1
+				&&!enemy.isUp() 
+				&& !enemy.isDown()) {
+					JUMPCOUNT++;
+					if(JUMPCOUNT == 3 && enemy.isRight()) {
+						enemy.setLeft(true);
+						enemy.setRight(false);
+						enemy.left();
+					}else if(JUMPCOUNT == 3 && enemy.isLeft()) {
+						enemy.setLeft(false);
+						enemy.setRight(true);
+						enemy.right();
 					}
-				}
-
-			}
-*/
-			// 외벽 충돌 확인
-			if(JUMPCOUNT < 3
-					&& FIRSTBOTTOM == 1
-					&& leftColor.getRed() == 255 
-					&& leftColor.getGreen() == 0 
-					&& leftColor.getBlue() == 0) {
-				
-				enemy.setLeft(false);
-				enemy.setRight(true);
-				if (!enemy.isUp() && !enemy.isDown()) {
-					JUMPCOUNT++;
-					if(JUMPCOUNT == 3) enemy.right();
 					enemy.up();
-				}
 				
-			}else if(JUMPCOUNT < 3
-					&& FIRSTBOTTOM == 1
-					&& rightColor.getRed() == 255 
-					&& rightColor.getGreen() == 0 
-					&& rightColor.getBlue() == 0) {
-
-				enemy.setRight(false);
-				enemy.setLeft(true);
-				if (!enemy.isUp() && !enemy.isDown()) {
-					JUMPCOUNT++;
-					if(JUMPCOUNT == 3) enemy.left();
-					enemy.up();
-				}
-				
-			}else if (leftColor.getRed() == 255 && leftColor.getGreen() == 0 && leftColor.getBlue() == 0) {
+			}// 외벽 충돌 확인 
+			else if (leftColor.getRed() == 255 && leftColor.getGreen() == 0 && leftColor.getBlue() == 0) {
 				enemy.setLeft(false);
 				if (!enemy.isRight()) {
 					enemy.right();
-//					if (FIRSTBOTTOM != 0)// 맨 밑바닥에서 벽 충돌 수 세기
-//						STATE++;
+					if (FIRSTBOTTOM != 0)// 맨 밑바닥에서 벽 충돌 수 세기
+						STATE++;
 				}
 			} else if (rightColor.getRed() == 255 && rightColor.getGreen() == 0 && rightColor.getBlue() == 0) {
 				enemy.setRight(false);
 				if (!enemy.isLeft()) {
 					enemy.left();
-//					if (FIRSTBOTTOM != 0) // 맨 밑바닥에서 벽 충돌 수 세기
-//						STATE++;
+					if (FIRSTBOTTOM != 0) // 맨 밑바닥에서 벽 충돌 수 세기
+						STATE++;
 				}
 			}
 
