@@ -1,4 +1,4 @@
-package bubble.test.ex19;
+package bubble.test.ex20;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -12,6 +12,7 @@ import lombok.Setter;
 public class Enemy extends JLabel implements Moveable {
 
 	private BubbleFrame mContext;
+	private Player player;
 	
 	//위치상태
 	private int x;
@@ -34,10 +35,12 @@ public class Enemy extends JLabel implements Moveable {
 	private final int JUMPSPEED = 1; // up,down
 
 	private ImageIcon enemyR, enemyL;//적군의 방향상태
-	private ImageIcon playerDie;
+	
 
 	public Enemy(BubbleFrame mContext, EnemyWay enemyWay) {
 		this.mContext = mContext;
+		this.player = mContext.getPlayer();
+		
 		initObject();
 		initSetting();
 		initBackGroundEnemyService();
@@ -47,7 +50,6 @@ public class Enemy extends JLabel implements Moveable {
 	private void initObject() {
 		enemyR = new ImageIcon("image/enemyR.png");
 		enemyL = new ImageIcon("image/enemyL.png");
-		playerDie = new ImageIcon("image/playerLDie.png");
 	}
 
 	// 최초 상태
@@ -98,6 +100,17 @@ public class Enemy extends JLabel implements Moveable {
 				setIcon(enemyL);
 				x = x - SPEED;
 				setLocation(x, y);
+				
+				if (Math.abs(x - player.getX()) < 10 && // X좌표검사
+						(Math.abs(y - player.getY()) > 0 && Math.abs(y - player.getY()) < 50))// Y좌표검사
+				{
+					// bubble의X값과 enenmy의 X값
+					if(player.getState() == 0) {
+						player.setState(1);
+						player.up();
+						System.out.println("적왼쪽뷰딪힘 attack");
+					}
+				}
 
 				try {
 					Thread.sleep(10); // 0.01초
@@ -120,6 +133,17 @@ public class Enemy extends JLabel implements Moveable {
 				setIcon(enemyR);
 				x = x + SPEED;
 				setLocation(x, y);
+				
+				if (Math.abs(x - player.getX()) < 10 && // X좌표검사
+						(Math.abs(y - player.getY()) > 0 && Math.abs(y - player.getY()) < 50))// Y좌표검사
+				{
+					// bubble의X값과 enenmy의 X값
+					if(player.getState() == 0) {
+						player.setState(1);
+						player.up();
+						System.out.println("적오른쪽뷰딪힘 attack");
+					}
+				}
 
 				try {
 					Thread.sleep(10); // 0.01초
@@ -140,6 +164,17 @@ public class Enemy extends JLabel implements Moveable {
 			for (int i = 0; i < 130 / JUMPSPEED; i++) {
 				y = y - JUMPSPEED; // 왼쪽상단 좌표가 0,0이기때문에 up은 -(minus)해줘야함
 				setLocation(x, y);
+				
+				if (Math.abs(x - player.getX()) < 10 && // X좌표검사
+						(Math.abs(y - player.getY()) > 0 && Math.abs(y - player.getY()) < 50))// Y좌표검사
+				{
+					// bubble의X값과 enenmy의 X값
+					if(player.getState() == 0) {
+						player.setState(1);
+						player.up();
+						System.out.println("적윗쪽뷰딪힘 attack");
+					}
+				}
 				try {
 					Thread.sleep(5);
 				} catch (InterruptedException e) {
@@ -161,6 +196,18 @@ public class Enemy extends JLabel implements Moveable {
 			while (down) {
 				y = y + JUMPSPEED;
 				setLocation(x, y);
+				
+				if (Math.abs(x - player.getX()) < 10 && // X좌표검사
+						(Math.abs(y - player.getY()) > 0 && Math.abs(y - player.getY()) < 50))// Y좌표검사
+				{
+					// bubble의X값과 enenmy의 X값
+					if(player.getState() == 0) {
+						player.setState(1);
+						player.up();
+						System.out.println("적아래쪽뷰딪힘 attack");
+					}
+				}
+				
 				try {
 					Thread.sleep(3);
 				} catch (InterruptedException e) {
@@ -171,14 +218,4 @@ public class Enemy extends JLabel implements Moveable {
 		}).start();
 	}
 	
-	
-	// 적군 물방울 공격
-	@Override
-	public void attack() {
-//		state = 1;//물방울
-		mContext.getPlayer().setState(1);
-		setIcon(playerDie);// icon 변경
-//		mContext.remove();// 적군 메모리에서 삭제(가비지 컬렉션-> 즉시 발동하지 않음)
-		mContext.repaint();
-	}
 }

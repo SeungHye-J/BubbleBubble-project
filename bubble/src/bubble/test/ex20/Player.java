@@ -1,8 +1,9 @@
-package bubble.test.ex19;
+package bubble.test.ex20;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -39,6 +40,7 @@ public class Player extends JLabel implements Moveable {
 	private final int JUMPSPEED = 2; // up,down
 
 	private ImageIcon playerR, playerL;// 캐릭터가 오른쪽을볼지 왼쪽을볼지 상태
+	private ImageIcon playerLDie, playerRDie;
 	private int state;// 0(살아있는 상태),1(적군과 부딪힌 상태)
 	
 	
@@ -53,6 +55,8 @@ public class Player extends JLabel implements Moveable {
 	private void initObject() {
 		playerR = new ImageIcon("image/playerR.png");
 		playerL = new ImageIcon("image/playerL.png");
+		playerRDie = new ImageIcon("image/playerRDie.png");
+		playerLDie = new ImageIcon("image/playerLDie.png");
 		bubbleList = new ArrayList<>();
 	}
 
@@ -106,10 +110,17 @@ public class Player extends JLabel implements Moveable {
 
 		new Thread(() -> {
 			while (left) {
-				setIcon(playerL);
-				x = x - SPEED;
-				setLocation(x, y);
-
+				
+				if(state ==0) {
+					setIcon(playerL);
+					x = x - SPEED;
+					setLocation(x, y);
+				}else {
+					setIcon(playerLDie);
+					//System.out.println("left()");
+					//die(playerLDie);
+					
+				}
 				try {
 					Thread.sleep(10); // 0.01초
 				} catch (InterruptedException e) {
@@ -128,10 +139,16 @@ public class Player extends JLabel implements Moveable {
 
 		new Thread(() -> {
 			while (right) {
-				setIcon(playerR);
-				x = x + SPEED;
-				setLocation(x, y);
-
+				if(state ==0) {
+					setIcon(playerR);
+					x = x + SPEED;
+					setLocation(x, y);
+				}else {
+					setIcon(playerRDie);
+				//	System.out.println("right()");
+					//die(playerRDie);
+					
+				}
 				try {
 					Thread.sleep(10); // 0.01초
 				} catch (InterruptedException e) {
@@ -149,18 +166,31 @@ public class Player extends JLabel implements Moveable {
 		up = true;
 
 		new Thread(() -> {
-			for (int i = 0; i < 130 / JUMPSPEED; i++) {
-				y = y - JUMPSPEED; // 왼쪽상단 좌표가 0,0이기때문에 up은 -(minus)해줘야함
-				setLocation(x, y);
-				try {
+			try {
+			if(state == 0) {
+				for (int i = 0; i < 130 / JUMPSPEED; i++) {
+					y = y - JUMPSPEED; // 왼쪽상단 좌표가 0,0이기때문에 up은 -(minus)해줘야함	
+					setLocation(x, y);
 					Thread.sleep(5);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
+				
+			}else {
+				System.out.println("up");
+				for (int i = 0; i < 130 / JUMPSPEED; i++) {
+					y = y - JUMPSPEED/2 ;
+					setLocation(x, y);
+					Thread.sleep(5);
+				}
+				
 			}
-
+			
 			up = false;
 			down();
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 		}).start();
 	}
 
@@ -171,15 +201,30 @@ public class Player extends JLabel implements Moveable {
 
 		new Thread(() -> {
 			while (down) {
-				y = y + JUMPSPEED;
-				setLocation(x, y);
-				try {
-					Thread.sleep(3);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				//if(state == 0) {
+					y = y + JUMPSPEED;
+					setLocation(x, y);
+					try {
+						Thread.sleep(3);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				//}else {
+					//die();
+				//}
+				
 			}
+			
 			down = false;
 		}).start();
 	}
+	
+	//
+//	public void die(Icon icon) {
+//		System.out.println("die()");
+//		//mContext.remove(p);
+//		setIcon(icon);
+//		mContext.repaint();
+//	}
+	
 }
