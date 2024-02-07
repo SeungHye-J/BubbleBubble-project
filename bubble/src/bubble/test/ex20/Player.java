@@ -17,6 +17,7 @@ public class Player extends JLabel implements Moveable {
 
 	private BubbleFrame mContext;
 	private List<Bubble> bubbleList;
+	private GameOver gameOver;
 	
 	//위치상태
 	private int x;
@@ -38,15 +39,13 @@ public class Player extends JLabel implements Moveable {
 	// 플레이어 속도 상태
 	private final int SPEED = 4; // 상수대문자
 	private final int JUMPSPEED = 2; // up,down
-
-	private ImageIcon playerR, playerL;// 캐릭터가 오른쪽을볼지 왼쪽을볼지 상태
-	private ImageIcon playerLDie, playerRDie;
-	private int state;// 0(살아있는 상태),1(적군과 부딪힌 상태)
 	
+	private int state;// 0 : live , 1 : die
+
+	private ImageIcon playerR, playerL, playerLDie, playerRDie;// 캐릭터가 오른쪽을볼지 왼쪽을볼지 상태
 	
 	public Player(BubbleFrame mContext) {
 		this.mContext = mContext;
-
 		initObject();
 		initSetting();
 		initBackGroundPlayerService();
@@ -109,18 +108,12 @@ public class Player extends JLabel implements Moveable {
 		left = true;
 
 		new Thread(() -> {
-			while (left) {
+			while (left && getState() ==0) {
 				
-				if(state ==0) {
-					setIcon(playerL);
-					x = x - SPEED;
-					setLocation(x, y);
-				}else {
-					setIcon(playerLDie);
-					//System.out.println("left()");
-					//die(playerLDie);
-					
-				}
+				setIcon(playerL);
+				x = x - SPEED;
+				setLocation(x, y);
+				
 				try {
 					Thread.sleep(10); // 0.01초
 				} catch (InterruptedException e) {
@@ -138,17 +131,10 @@ public class Player extends JLabel implements Moveable {
 		right = true;
 
 		new Thread(() -> {
-			while (right) {
-				if(state ==0) {
-					setIcon(playerR);
-					x = x + SPEED;
-					setLocation(x, y);
-				}else {
-					setIcon(playerRDie);
-				//	System.out.println("right()");
-					//die(playerRDie);
-					
-				}
+			while (right && getState() == 0) {
+				setIcon(playerR);
+				x = x + SPEED;
+				setLocation(x, y);
 				try {
 					Thread.sleep(10); // 0.01초
 				} catch (InterruptedException e) {
@@ -162,34 +148,20 @@ public class Player extends JLabel implements Moveable {
 	// left + up , right + up
 	@Override
 	public void up() {
-//		System.out.println("up");
+		System.out.println("up");
 		up = true;
-
 		new Thread(() -> {
-			try {
-			if(state == 0) {
-				for (int i = 0; i < 130 / JUMPSPEED; i++) {
-					y = y - JUMPSPEED; // 왼쪽상단 좌표가 0,0이기때문에 up은 -(minus)해줘야함	
-					setLocation(x, y);
+			for (int i = 0; i < 130 / JUMPSPEED; i++) {
+				y = y - JUMPSPEED; // 왼쪽상단 좌표가 0,0이기때문에 up은 -(minus)해줘야함	
+				setLocation(x, y);
+				try {
 					Thread.sleep(5);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-				
-			}else {
-				System.out.println("up");
-				for (int i = 0; i < 130 / JUMPSPEED; i++) {
-					y = y - JUMPSPEED/2 ;
-					setLocation(x, y);
-					Thread.sleep(5);
-				}
-				
 			}
-			
 			up = false;
 			down();
-				
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			
 		}).start();
 	}
@@ -198,20 +170,15 @@ public class Player extends JLabel implements Moveable {
 	public void down() {
 //		System.out.println("down");
 		down = true;
-
 		new Thread(() -> {
 			while (down) {
-				//if(state == 0) {
-					y = y + JUMPSPEED;
-					setLocation(x, y);
-					try {
-						Thread.sleep(3);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				//}else {
-					//die();
-				//}
+				y = y + JUMPSPEED;
+				setLocation(x, y);
+				try {
+					Thread.sleep(3);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				
 			}
 			
@@ -219,12 +186,31 @@ public class Player extends JLabel implements Moveable {
 		}).start();
 	}
 	
-	//
-//	public void die(Icon icon) {
-//		System.out.println("die()");
-//		//mContext.remove(p);
-//		setIcon(icon);
-//		mContext.repaint();
-//	}
+	//player가 죽었을때
+	public void die() {
+		new Thread(() -> {
+			setState(1);
+			setIcon(playerWay.RIGHT == playerWay ? playerRDie : playerLDie);
+			new GameOverBGM();
+			mContext.getBgm().stopBGM();
+			
+			try {
+				if(!isUp() && !isDown()) {
+					System.out.println("up으로 넘겨");
+					up();
+				}
+				gameOver = new GameOver(mContext);
+				mContext.add(gameOver);
+				Thread.sleep(2000);
+				mContext.remove(this);
+				mContext.repaint();
+			}catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println("플레이어 사망.");
+		}).start();
+		
+	}
 	
 }

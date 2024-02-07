@@ -16,5 +16,4 @@ public interface Moveable {
 	default public void down() {}; 
 	default public void attack() {}; 
 	default public void attack(Enemy e) {}; 
-	default public void attacked(Player p) {}; 
 }

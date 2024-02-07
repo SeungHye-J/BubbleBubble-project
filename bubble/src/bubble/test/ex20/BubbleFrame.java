@@ -39,12 +39,12 @@ public class BubbleFrame extends JFrame {
 		enemys.add(new Enemy(mContext,EnemyWay.LEFT));
 		for(Enemy e : enemys) add(e);
 		bgm = new BGM();
+		bgm.playBGM("bgm.wav");
 	}
 	
 	private void initSetting() {
 		setSize(1000,640);
 		setLayout(null);;//absoulte 레이아웃(자유롭게 그림을 그릴 수 있다)
-		
 		setLocationRelativeTo(null);//JFrame 가운데 배치하기
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//x버튼으로 창을 끌 때 JVM 같이 종료하기
 	}
@@ -59,22 +59,24 @@ public class BubbleFrame extends JFrame {
 				
 				switch(e.getKeyCode()) {
 					case KeyEvent.VK_LEFT: 
-						if(!player.isLeft() && !player.isLeftWallCrash()) {
+						if(!player.isLeft() && !player.isLeftWallCrash() && player.getState() == 0) {
 							player.left();
 						}
 						break;
 					case KeyEvent.VK_RIGHT:
-						if(!player.isRight()&& !player.isRightWallCrash()) {
+						if(!player.isRight()&& !player.isRightWallCrash() && player.getState() == 0) {
 							player.right();
 						}
 						break;
 					case KeyEvent.VK_UP: 
-						if(!player.isUp()&&!player.isDown()) {
+						if(!player.isUp()&&!player.isDown() && player.getState() == 0) {
 							player.up();
 						}
 						break;
 					case KeyEvent.VK_SPACE: 
-						player.attack();
+						if(player.getState() == 0) {
+							player.attack();
+						}
 						break;
 				}
 			}

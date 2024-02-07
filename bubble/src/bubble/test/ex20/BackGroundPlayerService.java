@@ -11,7 +11,7 @@ import javax.swing.plaf.synth.SynthScrollBarUI;
 //메인스레드 바쁨 - 키보드 이벤트를 처리하기 바쁨.
 //백그라운드에서 계속 관찰
 public class BackGroundPlayerService implements Runnable {
-	private BGM bgm;
+	
 	private BufferedImage image;
 	private Player player;
 	private List<Bubble> bubbleList;
@@ -29,7 +29,7 @@ public class BackGroundPlayerService implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (player.getState() == 0) {
 
 			// 1.버블 중복 체크
 			for (int i = 0; i < bubbleList.size(); i++) {
@@ -66,13 +66,6 @@ public class BackGroundPlayerService implements Runnable {
 
 			}
 			
-			if(player.getState()==1) {
-				System.out.println("게임오버!");
-				
-				new GameOverBGM();
-				
-				break;
-			}
 
 			// 외벽 충돌 확인
 			if (leftColor.getRed() == 255 && leftColor.getGreen() == 0 && leftColor.getBlue() == 0) {

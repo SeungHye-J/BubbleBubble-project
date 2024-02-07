@@ -40,7 +40,6 @@ public class Enemy extends JLabel implements Moveable {
 	public Enemy(BubbleFrame mContext, EnemyWay enemyWay) {
 		this.mContext = mContext;
 		this.player = mContext.getPlayer();
-		
 		initObject();
 		initSetting();
 		initBackGroundEnemyService();
@@ -94,21 +93,17 @@ public class Enemy extends JLabel implements Moveable {
 //		System.out.println("left");
 		enemyWay = EnemyWay.LEFT;
 		left = true;
-
 		new Thread(() -> {
 			while (left) {
 				setIcon(enemyL);
 				x = x - SPEED;
 				setLocation(x, y);
-				
+				// bubble의X값과 enenmy의 X값
 				if (Math.abs(x - player.getX()) < 10 && // X좌표검사
 						(Math.abs(y - player.getY()) > 0 && Math.abs(y - player.getY()) < 50))// Y좌표검사
 				{
-					// bubble의X값과 enenmy의 X값
-					if(player.getState() == 0) {
-						player.setState(1);
-						player.up();
-						System.out.println("적왼쪽뷰딪힘 attack");
+					if(player.getState() == 0 && getState() == 0) {
+						player.die();
 					}
 				}
 
@@ -127,21 +122,17 @@ public class Enemy extends JLabel implements Moveable {
 //		System.out.println("right");
 		enemyWay = EnemyWay.RIGHT;
 		right = true;
-
 		new Thread(() -> {
 			while (right) {
 				setIcon(enemyR);
 				x = x + SPEED;
 				setLocation(x, y);
-				
+				// bubble의X값과 enenmy의 X값
 				if (Math.abs(x - player.getX()) < 10 && // X좌표검사
 						(Math.abs(y - player.getY()) > 0 && Math.abs(y - player.getY()) < 50))// Y좌표검사
 				{
-					// bubble의X값과 enenmy의 X값
-					if(player.getState() == 0) {
-						player.setState(1);
-						player.up();
-						System.out.println("적오른쪽뷰딪힘 attack");
+					if(player.getState() == 0 && getState() == 0) {
+						player.die();
 					}
 				}
 
@@ -159,20 +150,16 @@ public class Enemy extends JLabel implements Moveable {
 	public void up() {
 //		System.out.println("up");
 		up = true;
-
 		new Thread(() -> {
 			for (int i = 0; i < 130 / JUMPSPEED; i++) {
 				y = y - JUMPSPEED; // 왼쪽상단 좌표가 0,0이기때문에 up은 -(minus)해줘야함
 				setLocation(x, y);
-				
+				// bubble의X값과 enenmy의 X값
 				if (Math.abs(x - player.getX()) < 10 && // X좌표검사
 						(Math.abs(y - player.getY()) > 0 && Math.abs(y - player.getY()) < 50))// Y좌표검사
 				{
-					// bubble의X값과 enenmy의 X값
-					if(player.getState() == 0) {
-						player.setState(1);
-						player.up();
-						System.out.println("적윗쪽뷰딪힘 attack");
+					if(player.getState() == 0 && getState() == 0) {
+						player.die();
 					}
 				}
 				try {
@@ -196,15 +183,12 @@ public class Enemy extends JLabel implements Moveable {
 			while (down) {
 				y = y + JUMPSPEED;
 				setLocation(x, y);
-				
+				// bubble의X값과 enenmy의 X값
 				if (Math.abs(x - player.getX()) < 10 && // X좌표검사
 						(Math.abs(y - player.getY()) > 0 && Math.abs(y - player.getY()) < 50))// Y좌표검사
 				{
-					// bubble의X값과 enenmy의 X값
-					if(player.getState() == 0) {
-						player.setState(1);
-						player.up();
-						System.out.println("적아래쪽뷰딪힘 attack");
+					if(player.getState() == 0 && getState() == 0) {
+						player.die();
 					}
 				}
 				
